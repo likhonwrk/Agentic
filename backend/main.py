@@ -56,7 +56,8 @@ async def lifespan(app: FastAPI):
     await browser_service.initialize()
     
     # Initialize MCP server manager
-    mcp_manager = MCPServerManager()
+    # Use configured MCP config path to ensure correct file is used across environments
+    mcp_manager = MCPServerManager(config_path=settings.mcp_config_path)
     await mcp_manager.initialize()
     
     # Initialize WebSocket manager
@@ -129,14 +130,14 @@ class BrowserTask(BaseModel):
 # API Routes
 @app.get("/")
 async def root():
-    """Health check endpoint"""
-    return {"status": "AI Agent System is running", "version": "1.0.0"}
+    """Root endpoint"""
+    return {"message": "AI Agent System is running"}
 
 @app.get("/health")
 async def health_check():
-    """Detailed health check"""
-    health_status = {
-        "status": "healthy",
+    """Health check endpoint"""
+    return {
+        "status": "ok",
         "services": {
             "agent_manager": agent_manager is not None,
             "browser_service": browser_service is not None,
@@ -144,33 +145,32 @@ async def health_check():
             "session_manager": session_manager is not None,
         }
     }
-    return health_status
 
 @app.post("/agent/chat", response_model=AgentResponse)
 async def chat_with_agent(request: AgentRequest):
-    """Chat with an AI agent"""
+    """Chat with the AI agent"""
     if not agent_manager:
         raise HTTPException(status_code=503, detail="Agent manager not initialized")
-    
+
     try:
-        response = await agent_manager.process_message(
+        result = await agent_manager.handle_request(
             message=request.message,
             session_id=request.session_id,
             agent_type=request.agent_type,
             tools=request.tools,
             context=request.context
         )
-        return response
+        return AgentResponse(**result)
     except Exception as e:
-        logger.error(f"Error processing agent request: {e}")
+        logger.error(f"Error in /agent/chat: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/browser/execute")
 async def execute_browser_task(task: BrowserTask):
-    """Execute browser automation task"""
+    """Execute a browser automation task"""
     if not browser_service:
         raise HTTPException(status_code=503, detail="Browser service not initialized")
-    
+
     try:
         result = await browser_service.execute_task(
             action=task.action,

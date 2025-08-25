@@ -10,10 +10,12 @@ services:
       - NODE_ENV=production
       - PYTHONPATH=/app/backend
       - DOCKER_CONTAINER=true
+      - MCP_CONFIG_PATH=/app/mcp-config.json
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./data:/app/data
       - ./logs:/app/logs
+      - ./mcp-config.json:/app/mcp-config.json:ro
     depends_on:
       - redis
       - mongodb

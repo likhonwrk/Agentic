@@ -13,13 +13,17 @@
         "run",
         "-i",
         "--rm",
-        "-p",
-        "9222:9222",
-        "acuvity/mcp-server-playwright:sha256-e13bbdf3ad1b483b803b0bf401fbead0fd4801a3022260cc3c21c91797b30557.sig"
-      ],
-      "env": {
-        "DISPLAY": ":99"
-      }
+        "mcp/playwright"
+      ]
+    },
+    "fetch": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "mcp/fetch"
+      ]
     },
     "browseruse": {
       "command": "docker",

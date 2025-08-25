@@ -31,6 +31,7 @@ services:
     volumes:
       - ./backend:/app
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./mcp-config.json:/app/mcp-config.json:ro
     environment:
       - ENVIRONMENT=development
       - DATABASE_URL=mongodb://mongodb:27017/agentic
