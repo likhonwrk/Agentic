@@ -34,7 +34,7 @@ services:
 
   # Browser automation with Playwright
   playwright-server:
-    image: acuvity/mcp-server-playwright:sha256-e13bbdf3ad1b483b803b0bf401fbead0fd4801a3022260cc3c21c91797b30557.sig
+    image: mcp/playwright
     ports:
       - "9222:9222"
     environment:

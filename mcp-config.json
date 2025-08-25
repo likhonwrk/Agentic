@@ -1,36 +1,36 @@
 {
   "mcpServers": {
     "puppeteer": {
-      "command": "docker",
-      "args": ["run", "-i", "--rm", "-e", "DOCKER_CONTAINER", "mcp/puppeteer"],
-      "env": {
-        "DOCKER_CONTAINER": "true"
-      }
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"],
+      "env": {}
     },
     "playwright": {
-      "command": "docker",
-      "args": [
-        "run",
-        "-i",
-        "--rm",
-        "mcp/playwright"
-      ]
+      "command": "npx",
+      "args": ["-y", "@executeautomation/playwright-mcp-server"],
+      "env": {}
     },
     "fetch": {
       "command": "docker",
-      "args": [
-        "run",
-        "-i",
-        "--rm",
-        "mcp/fetch"
-      ]
+      "args": ["run", "-i", "--rm", "mcp/fetch"],
+      "env": {}
     },
-    "browseruse": {
-      "command": "docker",
-      "args": ["run", "-i", "--rm", "-p", "8080:8080", "browseruse/browseruse:buildcache"],
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/app/data"],
+      "env": {}
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
       "env": {
-        "DISPLAY": ":99"
+        "MEMORY_FILE_PATH": "/app/data/memory.json"
       }
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "env": {}
     }
   }
 }
