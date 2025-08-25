@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     browser_timeout: int = Field(default=30000, env="BROWSER_TIMEOUT")
     
     # MCP Server configuration
-    mcp_config_path: str = Field(default="/app/mcp-config.json", env="MCP_CONFIG_PATH")
+    mcp_config_path: str = Field(default="/app/mcp.json", env="MCP_CONFIG_PATH")
     
     # Security
     secret_key: str = Field(default="your-secret-key-change-in-production", env="SECRET_KEY")
