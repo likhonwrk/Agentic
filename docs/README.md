@@ -19,6 +19,8 @@ Welcome to the comprehensive documentation for the Agentic AI Agent Platform.
 - [API Reference](api-reference.md)
 - [Frontend Guide](frontend.md)
 - [Backend Guide](backend.md)
+- [Markdown-First Development](markdown-first.md)
+- [Mermaid to XState](mermaid-xstate.md)
 
 ### Deployment
 - [Local Deployment](deployment-local.md)

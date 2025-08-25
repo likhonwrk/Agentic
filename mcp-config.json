@@ -1,5 +1,9 @@
 {
   "mcpServers": {
+    "everything": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "mcp/everything"]
+    },
     "puppeteer": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-puppeteer"],

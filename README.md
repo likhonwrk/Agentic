@@ -1,6 +1,18 @@
-# AI Agent System
+# 🇧🇩 Agentic - AI Agent System
 
-A powerful AI agent system with browser automation, MCP integration, and multi-modal capabilities.
+<div align="center">
+
+![Agentic Logo](https://img.shields.io/badge/🤖_Agentic-AI_Agent_System-006747?style=for-the-badge&labelColor=da291c)
+
+**A powerful AI agent system built with love from Bangladesh 🇧🇩**
+
+[![Made in Bangladesh](https://img.shields.io/badge/Made%20in-🇧🇩_Bangladesh-006747?style=flat-square&labelColor=da291c)](https://en.wikipedia.org/wiki/Bangladesh)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](https://choosealicense.com/licenses/mit/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-0db7ed?style=flat-square&logo=docker)](https://www.docker.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-007ACC?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![Python](https://img.shields.io/badge/Python-3.11+-3776ab?style=flat-square&logo=python)](https://www.python.org/)
+
+</div>
 
 ## 🚀 Features
 
@@ -10,182 +22,108 @@ A powerful AI agent system with browser automation, MCP integration, and multi-m
 - **Real-time Communication**: WebSocket support for live interactions
 - **Session Management**: Persistent conversation sessions with Redis and MongoDB
 - **VNC Visualization**: Remote desktop viewing for browser automation
-- **Docker Support**: Containerized deployment with all dependencies
 
 ## 🏗️ Architecture
 
-```
-Agentic/
-├── frontend/          # Vue.js frontend application
-├── backend/           # FastAPI Python backend
-├── docker-compose.yml # Docker orchestration
-├── Dockerfile        # Multi-stage build configuration
-└── mcp-config.json   # MCP server configurations
+```mermaid
+graph TB
+    subgraph "🇧🇩 System Architecture"
+        Frontend[🎨 Vue.js Frontend]
+        Backend[⚡ FastAPI Backend]
+        Database[(🗄️ MongoDB + Redis)]
+        Browser[🌐 Browser Automation]
+    end
+    
+    Frontend <--> Backend
+    Backend <--> Database
+    Backend <--> Browser
 ```
 
 ## 🛠️ Quick Start
 
 ### Prerequisites
 
-- Docker and Docker Compose
-- Node.js 20+ (for local development)
-- Python 3.11+ (for local development)
+```bash
+✅ Docker & Docker Compose
+✅ Node.js 20+
+✅ Python 3.11+
+```
 
 ### Using Docker (Recommended)
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd Agentic
-   ```
+```bash
+# Clone and start
+git clone <repository-url>
+cd Agentic
+docker-compose up --build
 
-2. **Start the services**
-   ```bash
-   docker-compose up --build
-   ```
-
-3. **Access the application**
-   - Frontend: http://localhost:5173
-   - Backend API: http://localhost:8000
-   - Health Check: http://localhost:8000/health
+# Access points:
+# Frontend: http://localhost:5173
+# Backend API: http://localhost:8000
+# Health Check: http://localhost:8000/health
+```
 
 ### Local Development
 
-#### Frontend Setup
+```bash
+# Frontend
+cd frontend
+npm install
+npm run dev
 
-1. **Install dependencies**
-   ```bash
-   cd frontend
-   npm install
-   ```
-
-2. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-#### Backend Setup
-
-1. **Install dependencies**
-   ```bash
-   cd backend
-   pip install -r requirements.txt
-   ```
-
-2. **Start the backend**
-   ```bash
-   python main.py
-   ```
+# Backend
+cd backend
+pip install -r requirements.txt
+python main.py
+```
 
 ## 🔧 Configuration
 
-### Environment Variables
-
-Create a `.env` file in the backend directory:
+Create `.env` file in backend directory:
 
 ```env
-# Server Configuration
+# Server
 HOST=0.0.0.0
 PORT=8000
 
-# Database Configuration
+# Database
 REDIS_URL=redis://localhost:6379
 MONGODB_URL=mongodb://localhost:27017
 
-# AI API Keys
+# API Keys
 OPENAI_API_KEY=your_openai_key
 ANTHROPIC_API_KEY=your_anthropic_key
-GOOGLE_API_KEY=your_google_key
 
 # Security
 SECRET_KEY=your-secret-key
 JWT_SECRET_KEY=your-jwt-secret
-
-# MCP Configuration
-MCP_CONFIG_PATH=./mcp-config.json
 ```
-
-### MCP Servers
-
-The system supports multiple MCP servers:
-- **Playwright**: Browser automation
-- **Puppeteer**: Web scraping and automation
-- **Fetch**: HTTP requests and web content
-- **Filesystem**: File operations
-- **Memory**: Persistent storage
-- **Sequential Thinking**: Advanced reasoning
 
 ## 📚 Documentation
 
-- [Frontend Setup](frontend/README.md) - Vue.js frontend documentation
-- [Backend Setup](backend/README.md) - FastAPI backend documentation
-- [Docker Guide](DOCKER.md) - Complete Docker deployment guide
-
-## 📡 API Endpoints
-
-### Session Management
-
-- `POST /api/v1/sessions` - Create new session
-- `GET /api/v1/sessions/{session_id}` - Get session info
-- `GET /api/v1/sessions` - List all sessions
-- `DELETE /api/v1/sessions/{session_id}` - Delete session
-- `POST /api/v1/sessions/{session_id}/stop` - Stop session
-- `POST /api/v1/sessions/{session_id}/chat` - Send message (SSE)
-
-### Agent Operations
-
-- `POST /agent/chat` - Chat with AI agent
-- `POST /browser/execute` - Execute browser task
-- `GET /health` - System health check
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **Port conflicts**: Ensure ports 5173, 8000, 6379, 27017 are available
-2. **Docker permissions**: Run `docker-compose` with appropriate permissions
-3. **Missing environment variables**: Check all required env vars are set
-4. **Browser automation**: Ensure Chrome/Chromium is available
-
-### Logs
-
-- Backend logs: `docker-compose logs ai-agent-system`
-- Frontend logs: `docker-compose logs frontend`
-- Database logs: `docker-compose logs redis` / `docker-compose logs mongodb`
+- [Frontend Setup](frontend/README.md)
+- [Backend Setup](backend/README.md)
+- [Docker Guide](DOCKER.md)
+- [API Reference](docs/api.md)
 
 ## 🧪 Testing
 
-### Frontend Tests
 ```bash
-cd frontend
-npm run test
+# Frontend tests
+cd frontend && npm run test
+
+# Backend tests
+cd backend && python -m pytest
 ```
 
-### Backend Tests
+## 🚀 Deployment
+
 ```bash
-cd backend
-python -m pytest
+# Production build
+cd frontend && npm run build
+docker build -t agentic-system .
+docker-compose -f docker-compose.prod.yml up -d
 ```
-
-## 📦 Deployment
-
-### Production Build
-
-1. **Build frontend**
-   ```bash
-   cd frontend
-   npm run build
-   ```
-
-2. **Build Docker image**
-   ```bash
-   docker build -t agentic-system .
-   ```
-
-3. **Deploy with Docker Compose**
-   ```bash
-   docker-compose -f docker-compose.prod.yml up -d
-   ```
 
 ## 🤝 Contributing
 
@@ -199,9 +137,10 @@ python -m pytest
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🔗 Links
+<div align="center">
 
-- [Documentation](docs/)
-- [API Reference](docs/api.md)
-- [MCP Server Docs](docs/mcp-servers.md)
-- [Contributing Guide](CONTRIBUTING.md)
+---
+
+**Made with ❤️ in Bangladesh 🇧🇩**
+
+</div>

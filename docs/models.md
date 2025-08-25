@@ -1,3 +1,7 @@
+---
+applyTo: "backend/core/mcp_integration.py"
+---
+
 # 🤖 AI Models Guide
 
 Agentic supports various AI models through Docker Model Runner, enabling local inference without external API dependencies.

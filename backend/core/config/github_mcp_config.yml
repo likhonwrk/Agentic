@@ -1,0 +1,44 @@
+# GitHub MCP Server Configuration Template
+
+# GitHub App Configuration
+github:
+  app_id: ""  # Your GitHub App ID
+  installation_id: ""  # Your GitHub App Installation ID
+  private_key_path: ""  # Path to your private key file
+  webhook_secret: ""  # GitHub webhook secret
+
+# Server Configuration  
+server:
+  host: "0.0.0.0"
+  port: 3000
+  log_level: "INFO"
+  debug: false
+
+# Security Configuration
+security:
+  rate_limit: true
+  rate_limit_window: 3600  # 1 hour
+  max_requests: 1000
+  jwt_secret: ""  # JWT signing secret
+  allowed_origins:
+    - "http://localhost:5173"
+    - "https://your-domain.com"
+
+# Caching Configuration
+cache:
+  enabled: true
+  ttl: 300  # 5 minutes
+  max_size: 1000  # Maximum number of cached items
+
+# Monitoring Configuration
+monitoring:
+  metrics_enabled: true
+  tracing_enabled: false
+  health_check_interval: 60  # seconds
+
+# Feature Flags
+features:
+  code_analysis: true
+  security_scanning: true
+  dependency_analysis: true
+  secret_detection: true
