@@ -40,7 +40,7 @@
 import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import ChatMessage from './ChatMessage.vue'
 import ChatInput from './ChatInput.vue'
-import { sessionService } from '../services/sessionService'
+
 import type { Session, ChatEvent } from '../types/session'
 
 const props = defineProps<{

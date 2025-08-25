@@ -1,51 +1,44 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme inline {
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
-    sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+@layer base {
+  :root {
+    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  /* Updated color scheme to match Agentic design with cyan primary and emerald accent */
-  --color-background: #111827; /* Dark Gray */
-  --color-foreground: #ffffff; /* White */
-  --color-card: #374151; /* Medium Gray */
-  --color-card-foreground: #ffffff; /* White */
-  --color-popover: #374151; /* Medium Gray */
-  --color-popover-foreground: #ffffff; /* White */
-  --color-primary: #0891b2; /* Cyan */
-  --color-primary-foreground: #ffffff; /* White */
-  --color-secondary: #10b981; /* Emerald */
-  --color-secondary-foreground: #ffffff; /* White */
-  --color-muted: #6b7280; /* Muted Gray */
-  --color-muted-foreground: #ffffff; /* White */
-  --color-accent: #10b981; /* Emerald accent */
-  --color-accent-foreground: #ffffff; /* White */
-  --color-destructive: #dc2626; /* Red */
-  --color-destructive-foreground: #ffffff; /* White */
-  --color-border: #4b5563; /* Darker Gray */
-  --color-input: #374151; /* Medium Gray */
-  --color-ring: #0891b2; /* Cyan focus ring */
-  --color-chart-1: #10b981; /* Emerald */
-  --color-chart-2: #0891b2; /* Cyan */
-  --color-chart-3: #dc2626; /* Red */
-  --color-chart-4: #f59e0b; /* Yellow */
-  --color-chart-5: #8b5cf6; /* Indigo */
+    /* Updated color scheme to match Agentic design with cyan primary and emerald accent */
+    --background: 222 47% 11%;
+    --foreground: 0 0% 100%;
+    --card: 215 25% 27%;
+    --card-foreground: 0 0% 100%;
+    --popover: 215 25% 27%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 195 86% 35%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 158 71% 41%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 215 14% 46%;
+    --muted-foreground: 0 0% 100%;
+    --accent: 158 71% 41%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 215 25% 35%;
+    --input: 215 25% 27%;
+    --ring: 195 86% 35%;
 
-  /* Added sidebar color tokens for consistent theming */
-  --color-sidebar: #111827; /* Dark Gray */
-  --color-sidebar-foreground: #ffffff; /* White */
-  --color-sidebar-primary: #0891b2; /* Cyan */
-  --color-sidebar-primary-foreground: #ffffff; /* White */
-  --color-sidebar-accent: #10b981; /* Emerald */
-  --color-sidebar-accent-foreground: #ffffff; /* White */
-  --color-sidebar-border: #4b5563; /* Darker Gray */
-  --color-sidebar-ring: #0891b2; /* Cyan */
+    --radius: 0.5rem;
+  }
+}
 
-  /* Added radius tokens for consistent border radius */
-  --radius-sm: 0.125rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
 /* Custom scrollbar */

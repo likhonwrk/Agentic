@@ -115,6 +115,12 @@ The system supports multiple MCP servers:
 - **Memory**: Persistent storage
 - **Sequential Thinking**: Advanced reasoning
 
+## 📚 Documentation
+
+- [Frontend Setup](frontend/README.md) - Vue.js frontend documentation
+- [Backend Setup](backend/README.md) - FastAPI backend documentation
+- [Docker Guide](DOCKER.md) - Complete Docker deployment guide
+
 ## 📡 API Endpoints
 
 ### Session Management

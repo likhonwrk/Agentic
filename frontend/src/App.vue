@@ -94,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import Sidebar from './components/Sidebar.vue'
 import ChatPage from './components/ChatPage.vue'
 import ToolPanel from './components/ToolPanel.vue'
