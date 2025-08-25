@@ -13,6 +13,7 @@ import uvicorn
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from core.agent_manager import AgentManager
@@ -236,11 +237,1446 @@ async def websocket_endpoint(websocket: WebSocket, session_id: str):
 if os.path.exists("/app/frontend"):
     app.mount("/static", StaticFiles(directory="/app/frontend"), name="static")
 
-if __name__ == "__main__":
-    uvicorn.run(
-        "main:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=False,
-        log_level="info"
-    )
+# Server-Sent Events (SSE) endpoint for real-time updates per session
+@app.get("/sse/{session_id}")
+async def sse_stream(session_id: str):
+    """SSE endpoint to stream real-time events for a session.
+    Uses an internal asyncio.Queue per session in WebSocketManager.
+    """
+    global websocket_manager
+    if not websocket_manager:
+        # Return a small stream that immediately ends with an error message
+        async def error_gen():
+            yield "event: error\n"
+            yield "data: {\"message\": \"WebSocket manager not initialized\"}\n\n"
+        return StreamingResponse(error_gen(), media_type="text/event-stream")
+
+    queue = websocket_manager.subscribe(session_id)
+
+    async def event_generator():
+        try:
+            # Initial hello event for clients to confirm connection
+            yield "event: hello\n"
+            yield f"data: {{\"session_id\": \"{session_id}\", \"status\": \"connected\"}}\n\n"
+
+            while True:
+                try:
+                    # Wait for next message with heartbeat timeout
+                    message = await asyncio.wait_for(queue.get(), timeout=15.0)
+                    payload = json.dumps(message)
+                    yield f"data: {payload}\n\n"
+                except asyncio.TimeoutError:
+                    # Send heartbeat to keep the connection alive
+                    yield ": keep-alive\n\n"
+        except asyncio.CancelledError:
+            # Client disconnected
+            pass
+        finally:
+            # Ensure we unsubscribe to avoid memory leaks
+            websocket_manager.unsubscribe(session_id, queue)
+
+    headers = {
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "X-Accel-Buffering": "no",  # Disable buffering for some proxies
+    }
+    return StreamingResponse(event_generator(), media_type="text/event-stream", headers=headers)
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
+        tools = await mcp_manager.list_tools()
+        return {"tools": tools}
+    except Exception as e:
+        logger.error(f"Error listing MCP tools: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/tools")
+async def list_mcp_tools():
+    """List available MCP tools"""
+    if not mcp_manager:
+        raise HTTPException(status_code=503, detail="MCP manager not initialized")
+    
+    try:
