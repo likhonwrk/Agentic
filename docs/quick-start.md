@@ -1,3 +1,7 @@
+---
+applyTo: "**/*"
+---
+
 # 🚀 Quick Start Guide
 
 Get up and running with Agentic in under 5 minutes.

@@ -1,3 +1,7 @@
+---
+applyTo: "{frontend/**/*.{vue,ts,js}}"
+---
+
 # AI Agent Frontend
 
 Vue.js-based frontend for the AI Agent system with real-time chat, session management, and VNC visualization.

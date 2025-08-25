@@ -1,3 +1,7 @@
+---
+applyTo: "backend/**/*.py"
+---
+
 # AI Agent Backend
 
 FastAPI-based backend for the AI Agent system with multi-modal capabilities, session management, and MCP integration.

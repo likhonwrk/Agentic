@@ -1,6 +1,26 @@
 # 🏗️ System Architecture
 
-Agentic is built as a distributed, containerized system designed for scalability and modularity.
+Agentic is built as a distributed, containerized system designed for scalability and modularity, with a focus on composable, markdown-driven development.
+
+## Design Philosophy
+
+### Markdown-First Development
+- Define agents and workflows in plain Markdown
+- Auto-generate code from markdown specifications
+- Version control friendly documentation
+- Single source of truth for system behavior
+
+### State Machine Generation
+- Convert Mermaid diagrams to XState machines
+- Visual workflow representation
+- Automatic code generation
+- Type-safe state transitions
+
+### Composable Architecture
+- Build complex systems from simple components
+- Reusable agent definitions
+- Plug-and-play workflow modules
+- Type-safe composition patterns
 
 ## High-Level Architecture
 

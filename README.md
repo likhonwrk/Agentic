@@ -11,6 +11,11 @@ A powerful AI agent system with browser automation, MCP integration, and multi-m
 - **Session Management**: Persistent conversation sessions with Redis and MongoDB
 - **VNC Visualization**: Remote desktop viewing for browser automation
 - **Docker Support**: Containerized deployment with all dependencies
+- **Markdown-First Development**: Define agents and workflows in plain Markdown
+- **Mermaid → XState**: Generate state machines directly from Mermaid diagrams
+- **AI Agent Generation**: Create autonomous agents from Markdown definitions
+- **Composable Architecture**: Build complex systems from simple components
+- **TypeScript Support**: Full type safety and autocompletion
 
 ## 🏗️ Architecture
 
