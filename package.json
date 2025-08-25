@@ -4,5 +4,10 @@
   "private": true,
   "scripts": {
     "build": "echo 'no build script'"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.3",
+    "@babel/plugin-proposal-pipeline-operator": "^7.27.1",
+    "@babel/preset-env": "^7.28.3"
   }
 }
