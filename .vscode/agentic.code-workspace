@@ -1,0 +1,83 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "backend"
+    },
+    {
+      "path": "frontend"
+    },
+    {
+      "path": "sandbox"
+    },
+    {
+      "path": "mockserver"
+    },
+    {
+      "path": "docs"
+    }
+  ],
+  "settings": {
+    "python.defaultInterpreterPath": "./backend/venv/bin/python",
+    "typescript.preferences.includePackageJsonAutoImports": "auto",
+    "eslint.workingDirectories": ["frontend"],
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    }
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "dev",
+        "type": "shell",
+        "command": "./dev.sh up -d",
+        "group": "build",
+        "problemMatcher": []
+      },
+      {
+        "label": "reset mock server",
+        "type": "shell",
+        "command": "touch mockserver/main.py",
+        "problemMatcher": []
+      },
+      {
+        "label": "run docs",
+        "type": "shell",
+        "command": "docsify serve docs",
+        "problemMatcher": []
+      },
+      {
+        "label": "sandbox logs",
+        "type": "shell",
+        "command": "./dev.sh logs -f sandbox",
+        "problemMatcher": []
+      },
+      {
+        "label": "frontend logs",
+        "type": "shell",
+        "command": "./dev.sh logs -f frontend",
+        "problemMatcher": []
+      },
+      {
+        "label": "backend logs",
+        "type": "shell",
+        "command": "./dev.sh logs -f backend",
+        "problemMatcher": []
+      }
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-python.python",
+      "ms-vscode.vscode-typescript-next",
+      "vue.volar",
+      "ms-vscode.vscode-docker",
+      "bradlc.vscode-tailwindcss",
+      "esbenp.prettier-vscode"
+    ]
+  }
+}

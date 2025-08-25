@@ -1,0 +1,118 @@
+{
+  "name": "AI Agent System",
+  "description": "Powerful AI agent system with browser automation, MCP integration, and multi-modal capabilities",
+  "repository": "https://github.com/your-username/ai-agent-system",
+  "template": {
+    "services": [
+      {
+        "name": "ai-agent-system",
+        "source": {
+          "type": "image",
+          "image": "ai-agent-system:latest"
+        },
+        "variables": {
+          "NODE_ENV": "production",
+          "PYTHONPATH": "/app/backend",
+          "DOCKER_CONTAINER": "true",
+          "LOG_LEVEL": "INFO",
+          "HOST": "0.0.0.0",
+          "PORT": "8000",
+          "BROWSER_HEADLESS": "true",
+          "BROWSER_TIMEOUT": "30000",
+          "MCP_CONFIG_PATH": "/app/mcp-config.json",
+          "ACCESS_TOKEN_EXPIRE_MINUTES": "30",
+          "MAX_WORKERS": "4",
+          "WORKER_TIMEOUT": "300"
+        },
+        "domains": [
+          {
+            "name": "${{RAILWAY_STATIC_URL}}"
+          }
+        ],
+        "healthcheck": {
+          "path": "/health",
+          "timeout": 300
+        },
+        "restart": {
+          "policy": "on-failure",
+          "maxRetries": 3
+        }
+      },
+      {
+        "name": "redis",
+        "source": {
+          "type": "image",
+          "image": "redis:7-alpine"
+        },
+        "variables": {
+          "REDIS_PASSWORD": "${{REDIS_PASSWORD}}"
+        },
+        "volumes": [
+          {
+            "name": "redis-data",
+            "mountPath": "/data"
+          }
+        ]
+      },
+      {
+        "name": "mongodb",
+        "source": {
+          "type": "image",
+          "image": "mongo:7"
+        },
+        "variables": {
+          "MONGO_INITDB_ROOT_USERNAME": "admin",
+          "MONGO_INITDB_ROOT_PASSWORD": "${{MONGO_PASSWORD}}",
+          "MONGO_INITDB_DATABASE": "agent_system"
+        },
+        "volumes": [
+          {
+            "name": "mongodb-data",
+            "mountPath": "/data/db"
+          }
+        ]
+      }
+    ],
+    "volumes": [
+      {
+        "name": "redis-data"
+      },
+      {
+        "name": "mongodb-data"
+      }
+    ]
+  },
+  "variables": [
+    {
+      "name": "OPENAI_API_KEY",
+      "description": "OpenAI API key for LLM integration",
+      "required": false
+    },
+    {
+      "name": "ANTHROPIC_API_KEY",
+      "description": "Anthropic API key for Claude integration",
+      "required": false
+    },
+    {
+      "name": "GROQ_API_KEY",
+      "description": "Groq API key for fast inference",
+      "required": false
+    },
+    {
+      "name": "SECRET_KEY",
+      "description": "Secret key for JWT token generation",
+      "required": true,
+      "default": "change-this-in-production"
+    },
+    {
+      "name": "REDIS_PASSWORD",
+      "description": "Password for Redis instance",
+      "required": true
+    },
+    {
+      "name": "MONGO_PASSWORD",
+      "description": "Password for MongoDB instance",
+      "required": true
+    }
+  ]
+}

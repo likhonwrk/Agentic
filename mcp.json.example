@@ -1,0 +1,45 @@
+{
+  "mcpServers": {
+    "puppeteer": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "DOCKER_CONTAINER",
+        "mcp/puppeteer"
+      ],
+      "env": {
+        "DOCKER_CONTAINER": "true"
+      }
+    },
+    "browseruse": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-p",
+        "8081:8080",
+        "browseruse/browseruse:buildcache"
+      ],
+      "env": {
+        "BROWSER_TYPE": "chromium",
+        "HEADLESS": "false"
+      }
+    },
+    "filesystem": {
+      "command": "python",
+      "args": ["-m", "mcp_server_filesystem", "/tmp/agentic-workspace"],
+      "env": {}
+    },
+    "web-search": {
+      "command": "python",
+      "args": ["-m", "mcp_server_web_search"],
+      "env": {
+        "SEARCH_API_KEY": "${SEARCH_API_KEY}"
+      }
+    }
+  }
+}

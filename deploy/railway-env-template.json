@@ -1,0 +1,28 @@
+{
+  "development": {
+    "NODE_ENV": "development",
+    "DEBUG": "true",
+    "LOG_LEVEL": "DEBUG",
+    "BROWSER_HEADLESS": "false",
+    "MAX_CONCURRENT_SESSIONS": "5",
+    "RATE_LIMIT_REQUESTS": "50"
+  },
+  "staging": {
+    "NODE_ENV": "staging",
+    "DEBUG": "true",
+    "LOG_LEVEL": "DEBUG",
+    "BROWSER_HEADLESS": "true",
+    "MAX_CONCURRENT_SESSIONS": "10",
+    "RATE_LIMIT_REQUESTS": "100"
+  },
+  "production": {
+    "NODE_ENV": "production",
+    "DEBUG": "false",
+    "LOG_LEVEL": "INFO",
+    "BROWSER_HEADLESS": "true",
+    "MAX_CONCURRENT_SESSIONS": "100",
+    "RATE_LIMIT_REQUESTS": "1000",
+    "WORKER_TIMEOUT": "300",
+    "MAX_WORKERS": "4"
+  }
+}

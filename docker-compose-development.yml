@@ -1,0 +1,130 @@
+version: '3.8'
+
+services:
+  # Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_SANDBOX_URL=http://localhost:8080
+      - VITE_VNC_URL=ws://localhost:5900
+      - VITE_CDP_URL=ws://localhost:9222
+    depends_on:
+      - backend
+    networks:
+      - agentic-network
+
+  # Backend Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=mongodb://mongodb:27017/agentic
+      - REDIS_URL=redis://redis:6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - MCP_CONFIG_PATH=/app/mcp-config.json
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - agentic-network
+
+  # Sandbox Service
+  sandbox:
+    build:
+      context: ./sandbox
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+      - "5900:5900"
+      - "9222:9222"
+    volumes:
+      - ./sandbox:/app
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      - DISPLAY=:99
+      - VNC_PASSWORD=agentic123
+      - CHROME_ARGS=--no-sandbox --disable-dev-shm-usage --remote-debugging-port=9222
+    privileged: true
+    networks:
+      - agentic-network
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/mongodb:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=agentic123
+      - MONGO_INITDB_DATABASE=agentic
+    networks:
+      - agentic-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    command: redis-server --appendonly yes --requirepass agentic123
+    networks:
+      - agentic-network
+
+  # MCP Puppeteer Server
+  mcp-puppeteer:
+    image: mcp/puppeteer:latest
+    environment:
+      - DOCKER_CONTAINER=true
+    networks:
+      - agentic-network
+
+  # BrowserUse Service
+  browseruse:
+    image: browseruse/browseruse:buildcache
+    ports:
+      - "8081:8080"
+    environment:
+      - BROWSER_TYPE=chromium
+      - HEADLESS=false
+    networks:
+      - agentic-network
+
+  # Mock Server for Testing
+  mockserver:
+    build:
+      context: ./mockserver
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./mockserver:/app
+    networks:
+      - agentic-network
+
+networks:
+  agentic-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  redis_data:

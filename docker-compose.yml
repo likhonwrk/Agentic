@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  ai-agent-system:
+    build: .
+    ports:
+      - "8000:8000"
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PYTHONPATH=/app/backend
+      - DOCKER_CONTAINER=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/app/data
+      - ./logs:/app/logs
+    depends_on:
+      - redis
+      - mongodb
+    networks:
+      - agent-network
+
+  # MCP Puppeteer Server
+  mcp-puppeteer:
+    image: mcp/puppeteer
+    environment:
+      - DOCKER_CONTAINER=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - agent-network
+
+  # Browser automation with Playwright
+  playwright-server:
+    image: acuvity/mcp-server-playwright:sha256-e13bbdf3ad1b483b803b0bf401fbead0fd4801a3022260cc3c21c91797b30557.sig
+    ports:
+      - "9222:9222"
+    environment:
+      - DISPLAY=:99
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    networks:
+      - agent-network
+
+  # Redis for session management and caching
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - agent-network
+
+  # MongoDB for agent state and conversation history
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - agent-network
+
+  # BrowserUse container for advanced browser automation
+  browseruse:
+    image: browseruse/browseruse:buildcache
+    ports:
+      - "8080:8080"
+    environment:
+      - DISPLAY=:99
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    networks:
+      - agent-network
+
+volumes:
+  redis_data:
+  mongodb_data:
+
+networks:
+  agent-network:
+    driver: bridge

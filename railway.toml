@@ -1,0 +1,109 @@
+[build]
+builder = "dockerfile"
+buildCommand = "docker build -t ai-agent-system ."
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+startCommand = "python backend/main.py"
+
+[[services]]
+name = "ai-agent-system"
+source = "."
+
+[services.variables]
+# Core application settings
+NODE_ENV = "production"
+PYTHONPATH = "/app/backend"
+DOCKER_CONTAINER = "true"
+LOG_LEVEL = "INFO"
+DEBUG = "false"
+
+# Server configuration
+HOST = "0.0.0.0"
+PORT = "8000"
+
+# Database URLs (will be provided by Railway addons)
+REDIS_URL = "${{Redis.REDIS_URL}}"
+MONGODB_URL = "${{MongoDB.MONGO_URL}}"
+
+# AI Model API Keys (set these in Railway dashboard)
+OPENAI_API_KEY = "${{OPENAI_API_KEY}}"
+ANTHROPIC_API_KEY = "${{ANTHROPIC_API_KEY}}"
+GROQ_API_KEY = "${{GROQ_API_KEY}}"
+
+# Browser automation settings
+BROWSER_HEADLESS = "true"
+BROWSER_TIMEOUT = "30000"
+
+# MCP Server configuration
+MCP_CONFIG_PATH = "/app/mcp-config.json"
+
+# Security settings
+SECRET_KEY = "${{SECRET_KEY}}"
+ACCESS_TOKEN_EXPIRE_MINUTES = "30"
+
+# Logging configuration
+LOG_FILE = "/app/logs/agent_system.log"
+
+# Performance settings
+MAX_WORKERS = "4"
+WORKER_TIMEOUT = "300"
+
+[[services.tcp]]
+port = 8000
+healthcheckPath = "/health"
+
+[[services.tcp]]
+port = 3000
+
+[[services]]
+name = "redis"
+source = "redis:7-alpine"
+
+[services.variables]
+REDIS_PASSWORD = "${{REDIS_PASSWORD}}"
+
+[[services.tcp]]
+port = 6379
+
+[[services]]
+name = "mongodb"
+source = "mongo:7"
+
+[services.variables]
+MONGO_INITDB_ROOT_USERNAME = "admin"
+MONGO_INITDB_ROOT_PASSWORD = "${{MONGO_PASSWORD}}"
+MONGO_INITDB_DATABASE = "agent_system"
+
+[[services.tcp]]
+port = 27017
+
+[environments.production]
+[environments.production.variables]
+LOG_LEVEL = "INFO"
+DEBUG = "false"
+BROWSER_HEADLESS = "true"
+MAX_CONCURRENT_SESSIONS = "100"
+RATE_LIMIT_REQUESTS = "1000"
+RATE_LIMIT_WINDOW = "3600"
+
+[environments.staging]
+[environments.staging.variables]
+LOG_LEVEL = "DEBUG"
+DEBUG = "true"
+BROWSER_HEADLESS = "true"
+MAX_CONCURRENT_SESSIONS = "10"
+RATE_LIMIT_REQUESTS = "100"
+RATE_LIMIT_WINDOW = "3600"
+
+[environments.development]
+[environments.development.variables]
+LOG_LEVEL = "DEBUG"
+DEBUG = "true"
+BROWSER_HEADLESS = "false"
+MAX_CONCURRENT_SESSIONS = "5"
+RATE_LIMIT_REQUESTS = "50"
+RATE_LIMIT_WINDOW = "3600"
