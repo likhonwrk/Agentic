@@ -1,360 +1,201 @@
-# 🤖 Agentic - AI Agent Platform
+# AI Agent System
 
-[![Docker](https://img.shields.io/badge/Docker-20.10+-blue.svg)](https://www.docker.com/)
-[![Python](https://img.shields.io/badge/Python-3.9+-green.svg)](https://www.python.org/)
-[![Vue.js](https://img.shields.io/badge/Vue.js-3.0+-4FC08D.svg)](https://vuejs.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg)](https://fastapi.tiangolo.com/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+A powerful AI agent system with browser automation, MCP integration, and multi-modal capabilities.
 
-A comprehensive, self-contained AI agent platform that runs entirely locally using Docker Model Runner for LLM inference. Build, deploy, and manage intelligent agents without external API dependencies.
+## 🚀 Features
 
-## 🌟 Key Features
-
-- **🏠 Fully Local**: Run LLMs locally using Docker Model Runner - no cloud APIs required
-- **🔧 Multi-Tool Support**: Browser automation, shell commands, file operations, web search
-- **🖥️ VNC Integration**: Real-time sandbox viewing with remote desktop capabilities
-- **⚡ Real-time Communication**: WebSocket and SSE for live agent interactions
-- **🔒 Secure Sandboxing**: Isolated Docker environments for safe tool execution
-- **📱 Modern UI**: Responsive Vue.js interface with dark theme
-- **🔐 Authentication**: JWT-based security with role-based access control
-- **📊 Session Management**: Persistent conversations with MongoDB/Redis
+- **Multi-Agent System**: Support for multiple AI agents with different capabilities
+- **Browser Automation**: Automated web browsing using Playwright and Selenium
+- **MCP Integration**: Model Context Protocol servers for extended functionality
+- **Real-time Communication**: WebSocket support for live interactions
+- **Session Management**: Persistent conversation sessions with Redis and MongoDB
+- **VNC Visualization**: Remote desktop viewing for browser automation
+- **Docker Support**: Containerized deployment with all dependencies
 
 ## 🏗️ Architecture
 
-\`\`\`
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │    Backend      │    │    Sandbox      │
-│   (Vue.js)      │◄──►│   (FastAPI)     │◄──►│   (Ubuntu)      │
-│   Port: 5173    │    │   Port: 8000    │    │   Port: 8080    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         │              ┌─────────────────┐              │
-         │              │   Docker LLM    │              │
-         └──────────────►│  Model Runner   │◄─────────────┘
-                        │  Port: 11434    │
-                        └─────────────────┘
-\`\`\`
+```
+Agentic/
+├── frontend/          # Vue.js frontend application
+├── backend/           # FastAPI Python backend
+├── docker-compose.yml # Docker orchestration
+├── Dockerfile        # Multi-stage build configuration
+└── mcp-config.json   # MCP server configurations
+```
 
-### Service Ports
-- **5173**: Web frontend (Vue.js + Vite)
-- **8000**: Backend API (FastAPI)
-- **8080**: Sandbox API (Tool execution)
-- **5900**: VNC remote desktop
-- **9222**: Chrome DevTools Protocol
-- **11434**: Local LLM inference
-
-## 🚀 Quick Start
+## 🛠️ Quick Start
 
 ### Prerequisites
-- Docker Desktop 4.30+ (for Model Runner support)
-- 8GB+ RAM (16GB recommended for larger models)
-- 20GB+ free disk space
 
-### 1. Clone Repository
-\`\`\`bash
-git clone https://github.com/likhonwrk/Agentic.git
-cd Agentic
-\`\`\`
+- Docker and Docker Compose
+- Node.js 20+ (for local development)
+- Python 3.11+ (for local development)
 
-### 2. Pull AI Model
-Choose from available models on [Docker Hub AI](https://hub.docker.com/u/ai):
+### Using Docker (Recommended)
 
-\`\`\`bash
-# Recommended: IBM Granite (4.5GB, optimized for agents)
-docker model pull ibm-granite/granite-3.1-8b-instruct
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd Agentic
+   ```
 
-# Alternative options:
-docker model pull meta-llama/llama-3.3-8b        # 5GB
-docker model pull google/gemma-3-9b              # 5.5GB
-docker model pull microsoft/phi-4                # 2.5GB (smaller)
-\`\`\`
+2. **Start the services**
+   ```bash
+   docker-compose up --build
+   ```
 
-### 3. Start Development Environment
-\`\`\`bash
-# Start all services
-./dev.sh up -d
+3. **Access the application**
+   - Frontend: http://localhost:5173
+   - Backend API: http://localhost:8000
+   - Health Check: http://localhost:8000/health
 
-# View logs
-./dev.sh logs
+### Local Development
 
-# Stop services
-./dev.sh down
-\`\`\`
+#### Frontend Setup
 
-### 4. Access the Platform
-- **Web Interface**: http://localhost:5173
-- **API Documentation**: http://localhost:8000/docs
-- **Sandbox API**: http://localhost:8080/docs
+1. **Install dependencies**
+   ```bash
+   cd frontend
+   npm install
+   ```
 
-## 📁 Project Structure
+2. **Start development server**
+   ```bash
+   npm run dev
+   ```
 
-\`\`\`
-Agentic/
-├── frontend/           # Vue.js web interface
-│   ├── src/
-│   │   ├── components/ # Reusable UI components
-│   │   ├── pages/      # Page components
-│   │   ├── services/   # API integration
-│   │   └── types/      # TypeScript definitions
-│   ├── Dockerfile.dev
-│   └── package.json
-├── backend/            # FastAPI server
-│   ├── app/
-│   │   ├── api/        # API routes
-│   │   ├── core/       # Core services
-│   │   ├── models/     # Data models
-│   │   └── utils/      # Utilities
-│   ├── Dockerfile.dev
-│   └── requirements.txt
-├── sandbox/            # Isolated execution environment
-│   ├── app/            # Sandbox API
-│   ├── supervisord.conf
-│   └── Dockerfile.dev
-├── mockserver/         # Testing mock server
-├── docs/              # Documentation site
-├── docker-compose-development.yml
-├── dev.sh             # Development script
-├── build.sh           # Build script
-└── run.sh             # Production script
-\`\`\`
+#### Backend Setup
 
-## 🛠️ Development
+1. **Install dependencies**
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   ```
 
-### Available Scripts
-
-\`\`\`bash
-# Development (with hot reload)
-./dev.sh up -d
-
-# Build all services
-./build.sh
-
-# Production deployment
-./run.sh
-
-# View service logs
-./dev.sh logs [service-name]
-
-# Update documentation
-./update_doc.sh
-\`\`\`
-
-### VS Code Integration
-The project includes `.vscode/tasks.json` for integrated development:
-- `Ctrl+Shift+P` → "Tasks: Run Task" → Select task
-
-## 🤖 Supported AI Models
-
-### Recommended Models from Docker Hub
-
-| Model | Size | Use Case | Command |
-|-------|------|----------|---------|
-| **IBM Granite 3.1 8B** | 4.5GB | General agents, instruction following | `docker model pull ibm-granite/granite-3.1-8b-instruct` |
-| **Meta Llama 3.3 8B** | 5GB | Reasoning, complex tasks | `docker model pull meta-llama/llama-3.3-8b` |
-| **Google Gemma 3 9B** | 5.5GB | Tool calling, structured output | `docker model pull google/gemma-3-9b` |
-| **Microsoft Phi-4** | 2.5GB | Lightweight, fast inference | `docker model pull microsoft/phi-4` |
-| **SmolLM2 1.7B** | 1GB | Resource-constrained environments | `docker model pull huggingface/smollm2-1.7b` |
-
-### Model Configuration
-Edit `docker-compose-development.yml` to change the model:
-
-\`\`\`yaml
-services:
-  llm:
-    image: docker/model-runner:latest
-    command: run --model ibm-granite/granite-3.1-8b-instruct --port 11434
-    # ... rest of configuration
-\`\`\`
+2. **Start the backend**
+   ```bash
+   python main.py
+   ```
 
 ## 🔧 Configuration
 
 ### Environment Variables
 
-Create `.env` files in each service directory:
+Create a `.env` file in the backend directory:
 
-**Backend (.env)**
-\`\`\`env
-LLM_ENDPOINT=http://llm:11434/v1
-MONGO_URI=mongodb://mongo:27017/agentic
-REDIS_HOST=redis
-JWT_SECRET=your-secret-key
-\`\`\`
+```env
+# Server Configuration
+HOST=0.0.0.0
+PORT=8000
 
-**Frontend (.env)**
-\`\`\`env
-VITE_API_BASE_URL=http://localhost:8000
-VITE_WS_URL=ws://localhost:8000/ws
-\`\`\`
+# Database Configuration
+REDIS_URL=redis://localhost:6379
+MONGODB_URL=mongodb://localhost:27017
 
-### MCP Server Configuration
-Copy and customize the MCP configuration:
-\`\`\`bash
-cp mcp.json.example mcp.json
-# Edit mcp.json to add your MCP servers
-\`\`\`
+# AI API Keys
+OPENAI_API_KEY=your_openai_key
+ANTHROPIC_API_KEY=your_anthropic_key
+GOOGLE_API_KEY=your_google_key
 
-## 🎯 Usage Examples
+# Security
+SECRET_KEY=your-secret-key
+JWT_SECRET_KEY=your-jwt-secret
 
-### Creating an Agent Session
-\`\`\`python
-import requests
+# MCP Configuration
+MCP_CONFIG_PATH=./mcp-config.json
+```
 
-# Create new session
-response = requests.post("http://localhost:8000/api/sessions", json={
-    "name": "My Agent Session",
-    "agent_type": "general"
-})
-session_id = response.json()["session_id"]
+### MCP Servers
 
-# Send message to agent
-requests.post(f"http://localhost:8000/api/sessions/{session_id}/messages", json={
-    "content": "Help me analyze this website: https://example.com",
-    "message_type": "user"
-})
-\`\`\`
+The system supports multiple MCP servers:
+- **Playwright**: Browser automation
+- **Puppeteer**: Web scraping and automation
+- **Fetch**: HTTP requests and web content
+- **Filesystem**: File operations
+- **Memory**: Persistent storage
+- **Sequential Thinking**: Advanced reasoning
 
-### Browser Automation
-\`\`\`javascript
-// Frontend: Request browser action
-const response = await fetch(`/api/sessions/${sessionId}/tools/browser`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    action: 'navigate',
-    url: 'https://example.com'
-  })
-});
-\`\`\`
+## 📡 API Endpoints
 
-## 🔒 Security Features
+### Session Management
 
-- **JWT Authentication**: Secure API access
-- **Role-based Access Control**: Fine-grained permissions
-- **Sandboxed Execution**: Isolated tool environments
-- **Rate Limiting**: API protection
-- **Input Validation**: Request sanitization
-- **CORS Configuration**: Cross-origin security
+- `POST /api/v1/sessions` - Create new session
+- `GET /api/v1/sessions/{session_id}` - Get session info
+- `GET /api/v1/sessions` - List all sessions
+- `DELETE /api/v1/sessions/{session_id}` - Delete session
+- `POST /api/v1/sessions/{session_id}/stop` - Stop session
+- `POST /api/v1/sessions/{session_id}/chat` - Send message (SSE)
 
-## 📊 Monitoring & Debugging
+### Agent Operations
 
-### Health Checks
-\`\`\`bash
-# Check service health
-curl http://localhost:8000/health
-curl http://localhost:8080/health
-
-# Monitor LLM service
-curl http://localhost:11434/v1/models
-\`\`\`
-
-### Logs
-\`\`\`bash
-# View all logs
-./dev.sh logs
-
-# Specific service logs
-./dev.sh logs backend
-./dev.sh logs sandbox
-./dev.sh logs llm
-\`\`\`
-
-### VNC Access
-Connect to sandbox desktop:
-- **VNC Viewer**: `localhost:5900`
-- **Web VNC**: http://localhost:5173 (integrated NoVNC)
-
-## 🚀 Deployment
-
-### Production Deployment
-\`\`\`bash
-# Build production images
-./build.sh
-
-# Deploy to production
-./run.sh
-
-# Or use Docker Compose directly
-docker-compose -f docker-compose.yml up -d
-\`\`\`
-
-### Railway Deployment
-The project includes Railway configuration:
-\`\`\`bash
-# Deploy to Railway
-railway up
-\`\`\`
-
-### Kubernetes (Roadmap)
-Future support for K8s deployment with Helm charts.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open Pull Request
-
-### Development Guidelines
-- Follow Python PEP 8 for backend code
-- Use Vue 3 Composition API for frontend
-- Add tests for new features
-- Update documentation
-
-## 📚 Documentation
-
-- **API Documentation**: http://localhost:8000/docs (when running)
-- **Architecture Guide**: [docs/architecture.md](docs/architecture.md)
-- **Development Guide**: [docs/development.md](docs/development.md)
-- **Deployment Guide**: [docs/deployment.md](docs/deployment.md)
+- `POST /agent/chat` - Chat with AI agent
+- `POST /browser/execute` - Execute browser task
+- `GET /health` - System health check
 
 ## 🐛 Troubleshooting
 
 ### Common Issues
 
-**Model not loading**
-\`\`\`bash
-# Check model availability
-docker model list
+1. **Port conflicts**: Ensure ports 5173, 8000, 6379, 27017 are available
+2. **Docker permissions**: Run `docker-compose` with appropriate permissions
+3. **Missing environment variables**: Check all required env vars are set
+4. **Browser automation**: Ensure Chrome/Chromium is available
 
-# Pull model if missing
-docker model pull ibm-granite/granite-3.1-8b-instruct
-\`\`\`
+### Logs
 
-**Port conflicts**
-\`\`\`bash
-# Check port usage
-netstat -tulpn | grep :5173
+- Backend logs: `docker-compose logs ai-agent-system`
+- Frontend logs: `docker-compose logs frontend`
+- Database logs: `docker-compose logs redis` / `docker-compose logs mongodb`
 
-# Stop conflicting services
-./dev.sh down
-\`\`\`
+## 🧪 Testing
 
-**Memory issues**
-- Ensure 8GB+ RAM available
-- Use smaller models (phi-4, smollm2)
-- Enable swap if needed
+### Frontend Tests
+```bash
+cd frontend
+npm run test
+```
+
+### Backend Tests
+```bash
+cd backend
+python -m pytest
+```
+
+## 📦 Deployment
+
+### Production Build
+
+1. **Build frontend**
+   ```bash
+   cd frontend
+   npm run build
+   ```
+
+2. **Build Docker image**
+   ```bash
+   docker build -t agentic-system .
+   ```
+
+3. **Deploy with Docker Compose**
+   ```bash
+   docker-compose -f docker-compose.prod.yml up -d
+   ```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 🔗 Links
 
-- [Docker Model Runner](https://www.docker.com/blog/introducing-docker-model-runner/) for local LLM inference
-- [FastAPI](https://fastapi.tiangolo.com/) for the robust backend framework
-- [Vue.js](https://vuejs.org/) for the reactive frontend
-- [Playwright](https://playwright.dev/) for browser automation
-- Open source AI models from Hugging Face, Meta, IBM, and Google
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/likhonwrk/Agentic/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/likhonwrk/Agentic/discussions)
-- **Documentation**: [docs/](docs/)
-
----
-
-**Built with ❤️ by [Likhon Sheikh](https://github.com/likhonwrk)**
-
-*Empowering developers to build intelligent agents locally, privately, and efficiently.*
+- [Documentation](docs/)
+- [API Reference](docs/api.md)
+- [MCP Server Docs](docs/mcp-servers.md)
+- [Contributing Guide](CONTRIBUTING.md)

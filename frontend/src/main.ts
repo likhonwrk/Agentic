@@ -6,7 +6,7 @@ import "./index.css"
 const app = createApp(App)
 
 // Global error handler
-app.config.errorHandler = (err, vm, info) => {
+app.config.errorHandler = (err, _vm, info) => {
   console.error("[v0] Vue error:", err, info)
 }
 

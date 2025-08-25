@@ -56,7 +56,6 @@ const emit = defineEmits<{
 const messagesContainer = ref<HTMLElement>()
 const isTyping = ref(false)
 const isProcessing = ref(false)
-const eventSource = ref<EventSource | null>(null)
 
 // Methods
 const handleMessageSend = async (message: string) => {
@@ -107,7 +106,6 @@ const startSSEConnection = async (message: string) => {
     const reader = response.body?.getReader()
     if (!reader) throw new Error('No response body')
 
-    let currentAssistantMessage = ''
     let currentEvent: ChatEvent | null = null
 
     while (true) {
@@ -135,7 +133,6 @@ const startSSEConnection = async (message: string) => {
                   props.session.events.push(currentEvent)
                 }
                 currentEvent.content += data.content
-                currentAssistantMessage += data.content
                 break
                 
               case 'title':
@@ -224,8 +221,6 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (eventSource.value) {
-    eventSource.value.close()
-  }
+  // Clean up any active connections
 })
 </script>

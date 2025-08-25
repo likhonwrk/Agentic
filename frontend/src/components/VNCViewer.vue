@@ -163,11 +163,7 @@ const handleVNCMessage = (data: ArrayBuffer) => {
   }
 }
 
-const sendVNCMessage = (data: ArrayBuffer) => {
-  if (websocket.value && websocket.value.readyState === WebSocket.OPEN) {
-    websocket.value.send(data)
-  }
-}
+
 
 const handleMouseDown = (event: MouseEvent) => {
   if (connectionStatus.value !== 'connected') return
@@ -175,8 +171,8 @@ const handleMouseDown = (event: MouseEvent) => {
   const rect = vncCanvas.value?.getBoundingClientRect()
   if (!rect) return
 
-  const x = Math.floor((event.clientX - rect.left) * (vncCanvas.value?.width || 0) / rect.width)
-  const y = Math.floor((event.clientY - rect.top) * (vncCanvas.value?.height || 0) / rect.height)
+  const x = Math.floor((event.clientX - rect.left) * (vncCanvas.value!.width) / rect.width)
+  const y = Math.floor((event.clientY - rect.top) * (vncCanvas.value!.height) / rect.height)
   
   // Send mouse down event to VNC server
   // This would need to be formatted according to VNC protocol
@@ -189,8 +185,8 @@ const handleMouseUp = (event: MouseEvent) => {
   const rect = vncCanvas.value?.getBoundingClientRect()
   if (!rect) return
 
-  const x = Math.floor((event.clientX - rect.left) * (vncCanvas.value?.width || 0) / rect.width)
-  const y = Math.floor((event.clientY - rect.top) * (vncCanvas.value?.height || 0) / rect.height)
+  const x = Math.floor((event.clientX - rect.left) * (vncCanvas.value!.width) / rect.width)
+  const y = Math.floor((event.clientY - rect.top) * (vncCanvas.value!.height) / rect.height)
   
   // Send mouse up event to VNC server
   console.log('[v0] Mouse up at:', x, y, 'button:', event.button)
@@ -202,11 +198,11 @@ const handleMouseMove = (event: MouseEvent) => {
   const rect = vncCanvas.value?.getBoundingClientRect()
   if (!rect) return
 
-  const x = Math.floor((event.clientX - rect.left) * (vncCanvas.value?.width || 0) / rect.width)
-  const y = Math.floor((event.clientY - rect.top) * (vncCanvas.value?.height || 0) / rect.height)
+  const x = Math.floor((event.clientX - rect.left) * (vncCanvas.value!.width) / rect.width)
+  const y = Math.floor((event.clientY - rect.top) * (vncCanvas.value!.height) / rect.height)
   
   // Send mouse move event to VNC server (throttled)
-  // console.log('[v0] Mouse move to:', x, y)
+  console.log('[v0] Mouse move to:', x, y)
 }
 
 const handleWheel = (event: WheelEvent) => {
