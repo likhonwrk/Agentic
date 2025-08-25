@@ -8,6 +8,7 @@
   "devDependencies": {
     "@babel/core": "^7.28.3",
     "@babel/plugin-proposal-pipeline-operator": "^7.27.1",
-    "@babel/preset-env": "^7.28.3"
+    "@babel/preset-env": "^7.28.3",
+    "@types/node": "^24.3.0"
   }
 }
